@@ -64,29 +64,8 @@
     }
 
 
-    #ghold {
-      margin: 25px;
-      display: none;
-      justify-content:center;
-      align-items: center;
-      background-color: white;
-      height: 18ch;
-      width: 60ch
-    }
-
-    #graph {
-      display: flex;
-      column-gap: 30px;
-      position: relative;
-    }
-
-    #graph li {
-      /* height: 50px; */
-      width:10px;
-      background-color: seagreen;
-      list-style: none;
-    }
-
+    
+   
     #btn {
       background-color: white;
       padding: 10px;
@@ -109,6 +88,12 @@
       right: 0;
       margin: 10px;
     }
+
+    .graph {
+      background-color: white;
+      margin: 20px;
+      width: 60ch;
+    }
    
 </style>
 <body>
@@ -129,12 +114,18 @@
    <div class="content" id="content"></div> 
    <textarea name="" placeholder="click to start the test" oninput="type_input()" id="text" cols="30" rows="10" onfocus="start()"></textarea>
    <button id="btn" onclick="reset()">Restart</button>
+   <div class="graph">
+   <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+   </div>
   </div>
    </div>
   
    <p class="version">v1.0.0</p>
+   <script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
    <script>
-       let time = 60;
+       let time = 5;
        let quote_no = 0;
        let quotes_array = [
         "The greatest glory in living lies not in never falling, but in rising every time we fall. -Nelson Mandela",
@@ -277,7 +268,9 @@
     //   finish game 
     let cpm=0;
     let wpm=0;
+    let game_no = 0;
       function finishgame() {
+        game_no++;
         console.log("Time UP");
         clearInterval(timers);
         document.getElementById('text').disabled = true;
@@ -294,13 +287,55 @@
        owpm.style.display ="block";
        ocpm.style.display = "block";
        restart.style.display = "block";
-       
+    yo.push(game_no);
+    value.push(wpm);
+    update_chart();
 
+        if(game_no >= 10) {
+          yo.shift();
+          value.shift();
+        }
+    
 
       }
 
     // Adding New thing graph
    
+
+ var value = []
+ var yo = [];
+ let myChart = 
+ new Chart(document.getElementById("myChart"), {
+  type: 'line',
+  data: {
+    labels: [],
+    datasets: [{ 
+        data: [],
+        label: "Speed",
+        borderColor: "#3e95cd",
+        fill: true
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Word Per Miniute'
+    }
+  }
+});
+
+// myChart.data.datasets[0].data[0] = 90;
+// myChart.update();
+function update_chart() {
+for(var i=0; i<value.length; i++) {
+  myChart.data.labels[i] = yo[i];
+  myChart.data.datasets[0].data[i] = value[i];
+  myChart.update();
+}
+
+}
+ 
 
    </script>
 </body>
