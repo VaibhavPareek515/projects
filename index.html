@@ -1,0 +1,307 @@
+<!-- version 1.0 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>type speed checker</title>
+</head>
+<style>
+    *{
+      margin:0px;
+      padding:0px;
+      box-sizing: border-box;
+    }
+
+    body{
+      font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      /* background-color: dodgerblue; */
+      background: linear-gradient(dodgerblue,royalblue);
+      display: grid;
+      place-items: center;
+      height: 100vh;
+    }
+
+    h1{
+      margin:15px;
+      color:white;
+      text-shadow: 1px 1px royalblue;
+    }
+
+    
+    .uli {
+      display: flex;
+      column-gap: 20px;
+      margin:15px;
+    }
+
+    .uli li {
+      list-style: none;
+      color:white;
+      text-shadow: 1px 1px royalblue;
+  
+    }
+    .content {
+        height: 10ch;
+        width: 60ch;
+        
+       margin-bottom: 10px;
+       padding: 7px;
+       overflow: auto;
+       background-color: white;
+       box-shadow: 0 0 10px 1px royalblue;
+       
+    }
+
+    #text {
+        resize: none;
+        padding: 3px;
+        width:65.7ch;
+        outline: none;
+        border: none;
+       box-shadow: 0 0 10px 1px royalblue;
+       margin: 10px;
+    }
+
+
+    #ghold {
+      margin: 25px;
+      display: none;
+      justify-content:center;
+      align-items: center;
+      background-color: white;
+      height: 18ch;
+      width: 60ch
+    }
+
+    #graph {
+      display: flex;
+      column-gap: 30px;
+      position: relative;
+    }
+
+    #graph li {
+      /* height: 50px; */
+      width:10px;
+      background-color: seagreen;
+      list-style: none;
+    }
+
+    #btn {
+      background-color: white;
+      padding: 10px;
+      color:dodgerblue;
+      border-radius: 14px;
+      font-weight: bold;
+      border: none;
+      box-shadow: 0 0 10px 1px royalblue;
+    }
+
+    .hello {
+      display: grid;
+     place-items: center;
+    }
+
+    .version {
+      color: white;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      margin: 10px;
+    }
+   
+</style>
+<body>
+  <div class="holder">
+    <h1>Type Machine</h1>
+    <div>
+        <ul class="uli">
+            <li>Time left <b id="time"></b></li>
+            <li>Total Key <b id="totalKey"></b></li>
+            <li>Error Key <b id="error"></b></li>
+            <li>Accurancy <b id="acc"></b></li>
+            <li id="iwpm">wpm <b id="wpm"></b></li>
+            <li id="icpm">cpm <b id="cpm"></b></li>
+        </ul>
+    </div>
+
+  <div class="hello">
+   <div class="content" id="content"></div> 
+   <textarea name="" placeholder="click to start the test" oninput="type_input()" id="text" cols="30" rows="10" onfocus="start()"></textarea>
+   <button id="btn" onclick="reset()">Restart</button>
+  </div>
+   </div>
+  
+   <p class="version">v1.0.0</p>
+   <script>
+       let time = 60;
+       let quote_no = 0;
+       let quotes_array = [
+        "The greatest glory in living lies not in never falling, but in rising every time we fall. -Nelson Mandela",
+        
+        "The way to get started is to quit talking and begin doing. -Walt Disney",
+        
+        "Your time is limited, so don't waste it living someone else's life. Don't be trapped by dogma – which is living with the results of other people's thinking. -Steve Jobs",
+        
+        "If life were predictable it would cease to be life, and be without flavor. -Eleanor Roosevelt",
+
+        "If you look at what you have in life, you'll always have more. If you look at what you don't have in life, you'll never have enough. -Oprah Winfrey"
+       ]
+
+       let owpm = document.getElementById('iwpm');
+       let ocpm = document.getElementById('icpm');
+       let restart = document.getElementById('btn');
+
+       restart.style.display = "none";
+       owpm.style.display ="none";
+       ocpm.style.display = "none";
+    
+    // To show the content on the division
+       let content = document.getElementById('content');
+       let current_quote;
+
+       function current_content() {
+       content.textContent = null;
+       current_quote = quotes_array[quote_no];
+
+            
+           current_quote.split('').forEach((char)=> {
+               let span = document.createElement('span');
+               span.textContent = char;
+               content.appendChild(span);
+
+           
+           })
+           
+            if(quote_no < quotes_array.length - 1) {
+                quote_no++;
+            }else{
+                quote_no = 0;
+            }
+       }
+
+    //    current_content();
+    
+    // to check we are typing write or wrong
+    let text;
+    let text_array;
+    let total_key = null;
+    let error = 0;
+    let total_error= 0;
+    let accurancy = 0;
+      function type_input() {
+       text = document.getElementById('text').value;
+       text_array = text.split('');
+       console.log(text_array);
+       total_key++;
+       error=0;
+      
+      
+       document.getElementById('totalKey').textContent = total_key;
+
+       for(var i =0; i<text_array.length; i++) {
+           if(text_array[i] == current_quote[i] ) {
+            document.querySelectorAll('span')[i].style.background = "white";
+               document.querySelectorAll('span')[i].style.color = " dodgerblue";
+           } 
+           
+           else{
+            document.querySelectorAll('span')[i].style.background = "red";
+            document.querySelectorAll('span')[i].style.color = "white";
+            error++;
+           }
+       
+       document.getElementById('error').textContent = total_error + error;
+       }
+
+       if(text.length === document.querySelectorAll('span').length) {
+          current_content();
+          total_error += error;
+          document.getElementById('text').value = "";
+
+       }
+
+       let correctCharacters = (total_key - (total_error + error));
+       let accuracyVal = ((correctCharacters / total_key) * 100);
+       document.getElementById('acc').textContent = Math.round(accuracyVal);
+      } 
+
+      let time_left;
+    // this is for starting game
+    let timers = null;
+      function start() {
+        current_content();
+        reset();
+
+        clearInterval(timers);
+        timers = setInterval(updatetimer, 1000);
+        restart.style.display = "none"
+      }
+      let time_lefts= time;
+      let timer = 0;
+
+    //   reset
+    function reset() {
+        accuracyVal = 0;
+        total_key = 0;
+        error = 0;
+        wpm = 0;
+        cpm = 0;
+        time_lefts= time;
+        timer= 0;
+        document.getElementById('text').value = "";
+        document.getElementById('text').disabled = false;
+
+       let owpm = document.getElementById('iwpm');
+       let ocpm = document.getElementById('icpm');
+
+       owpm.style.display ="none";
+       ocpm.style.display = "none";
+       
+        
+       
+    }
+
+      function updatetimer() {
+        //   time_lefts = 60;
+          if(time_lefts > 0) {
+            console.log("working")
+              time_lefts--;
+              timer++;
+              document.getElementById('time').textContent = time_lefts;
+          }
+          else {
+              finishgame();
+          }
+      }
+    //   finish game 
+    let cpm=0;
+    let wpm=0;
+      function finishgame() {
+        console.log("Time UP");
+        clearInterval(timers);
+        document.getElementById('text').disabled = true;
+
+        cpm = Math.round(((total_key / timer) * 60));
+        wpm = Math.round((((total_key / 5) / timer) * 60));
+
+        document.getElementById('cpm').textContent = cpm;
+        document.getElementById('wpm').textContent = wpm;
+
+        let owpm = document.getElementById('iwpm');
+       let ocpm = document.getElementById('icpm');
+
+       owpm.style.display ="block";
+       ocpm.style.display = "block";
+       restart.style.display = "block";
+       
+
+
+      }
+
+    // Adding New thing graph
+   
+
+   </script>
+</body>
+</html>
